@@ -1,14 +1,8 @@
-# fastapi
-# uvicorn 
-# sqlalchemy
-# alembic
-# pydantic
-# httpx
-# pytest
 
 fastapi==0.95.0
 uvicorn==0.23.0
 gunicorn==21.2.0
 sqlalchemy==2.0.20
 alembic==1.12.0
-psycopg2-binary==2.9.8
+psycopg2-binary==2.9.10
+python-dotenv==1.0.1

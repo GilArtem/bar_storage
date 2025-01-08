@@ -1,38 +1,85 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
-    build:
-      context: .
+    build: .
     container_name: bar_inventory_app
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
-    env_file:
-      - .env
     depends_on:
       - db
     environment:
-      - PYTHONWARNINGS=ignore
-    deploy:
-      resources:
-        limits:
-          memory: 4g
-        reservations:
-          memory: 2g
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - bar_inventory_network
 
   db:
-    image: postgres:15
+    image: postgres:alpine
     container_name: bar_inventory_db
-    ports:
-      - "5433:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_LOGGING_COLLECTOR: "on"
+      POSTGRES_LOG_FILE: "/var/log/postgresql/postgresql.log"
+    ports:
+      - "5433:5432" # Проброс порта на локальной машине 5433, а внутри контейнера останется 5432
+    networks:
+      - bar_inventory_network
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+    mem_limit: 512m
+
+networks:
+  bar_inventory_network:
+    driver: bridge
 
 volumes:
-  postgres_data:
+  db_data:
+
+
+
+
+
+
+
+
+
+
+
+# version: '3.8'
+
+# services:
+#   app:
+#     build:
+#       context: .
+#     container_name: bar_inventory_app
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - .:/app
+#     env_file:
+#       - .env
+#     depends_on:
+#       - db
+#     environment:
+#       - PYTHONWARNINGS=ignore
+#     deploy:
+#       resources:
+#         limits:
+#           memory: 4g
+#         reservations:
+#           memory: 2g
+
+#   db:
+#     image: postgres:15
+#     container_name: bar_inventory_db
+#     ports:
+#       - "5433:5432"
+#     environment:
+#       POSTGRES_USER: ${POSTGRES_USER}
+#       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#       POSTGRES_DB: ${POSTGRES_DB}
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:
